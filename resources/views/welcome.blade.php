@@ -1,329 +1,595 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Dashboard Keuangan Daerah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#3B82F6", // Blue
-                        "background-light": "#F7FAFC",
-                        "background-dark": "#1A202C",
-                    },
-                    fontFamily: {
-                        display: ["Poppins", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.75rem", // 12px
-                    },
-                },
-            },
-        };
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Keuangan Daerah Kubu Raya</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
         body {
-            font-family: 'Poppins', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .scrollbar-thin::-webkit-scrollbar {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            color: #1f2937;
+        }
+
+        .header .year {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 18px;
+            flex-shrink: 0;
+        }
+
+        .card-amount {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #1f2937;
+        }
+
+        .card-realisasi {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 3px;
+            border-radius: 2px;
+            margin-top: 6px;
+        }
+
+        .blue {
+            background-color: #2563eb;
+        }
+
+        .pink {
+            background-color: #ec4899;
+        }
+
+        .dark {
+            background-color: #1f2937;
+        }
+
+        .orange {
+            background-color: #f97316;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+            height: 400px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 6px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+            background-color: #f9fafb;
+        }
+
+        th:nth-child(2),
+        th:nth-child(3),
+        th:nth-child(4),
+        td:nth-child(2),
+        td:nth-child(3),
+        td:nth-child(4) {
+            text-align: right;
+        }
+
+        td {
+            padding: 10px 6px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .account-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .small-dot {
             width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: transparent;
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
         }
 
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 3px;
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+            text-align: center;
         }
 
-        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #4a5568;
+        .svg-wrapper {
+            width: 200px;
+            height: 200px;
+        }
+
+        .belanja-section {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 20px;
+            height: 400px;
+        }
+
+        @media (max-width: 1920px) {
+            .cards-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .main-content {
+                grid-template-columns: 1.8fr 1fr;
+            }
+
+            .belanja-section {
+                grid-template-columns: 1fr 1.8fr;
+            }
         }
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-gray-700 dark:text-gray-300">
-    <div class="p-4 sm:p-6 lg:p-8">
-        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-            <div class="flex items-center space-x-4">
-                <img alt="Kubu Raya Regency Government logo" class="h-12 w-12 sm:h-16 sm:w-16"
-                    src="{{ asset('logo.png') }}" />
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">Dashboard Keuangan Daerah
-                    </h1>
-                    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Pemerintah Daerah Kabupaten Kubu
-                        Raya</p>
-                </div>
-            </div>
-            <div class="mt-4 sm:mt-0">
-                <div
-                    class="bg-white dark:bg-gray-800 p-2 px-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <span class="text-sm font-semibold text-gray-800 dark:text-white">Tahun anggaran 2025</span>
-                </div>
-            </div>
-        </header>
-        <main>
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp 1.874.864.452.470,00</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Realisasi Rp 966.001.121.892,15</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
-                            <span class="text-gray-600 dark:text-gray-300">Pendapatan daerah</span>
-                        </div>
-                        <span
-                            class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">85%</span>
-                    </div>
-                </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp 2.048.151.597.242,00</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Realisasi Rp 876.813.653.635,81</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-                        <div class="bg-pink-500 h-2 rounded-full" style="width: 68%"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 bg-pink-500 rounded-full"></span>
-                            <span class="text-gray-600 dark:text-gray-300">Belanja daerah</span>
-                        </div>
-                        <span
-                            class="bg-pink-100 dark:bg-pink-900/50 text-pink-800 dark:text-pink-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">68%</span>
-                    </div>
-                </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp 183.287.144.772,00</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Realisasi Rp 803.923.982,00</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-                        <div class="bg-indigo-900 h-2 rounded-full" style="width: 90%"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 bg-indigo-900 rounded-full"></span>
-                            <span class="text-gray-600 dark:text-gray-300">Penerimaan pembiayaan</span>
-                        </div>
-                        <span
-                            class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">90%</span>
-                    </div>
-                </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp 183.287.144.772,00</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Realisasi Rp 803.923.982,00</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-                        <div class="bg-orange-500 h-2 rounded-full" style="width: 80%"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 bg-orange-500 rounded-full"></span>
-                            <span class="text-gray-600 dark:text-gray-300">Pengeluaran pembiayaan</span>
-                        </div>
-                        <span
-                            class="bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">80%</span>
-                    </div>
-                </div>
-            </section>
-            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div
-                    class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Pendapatan Daerah</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs text-gray-500 dark:text-gray-400 uppercase">
-                                <tr>
-                                    <th class="py-3 pr-6" scope="col">Nama Akun</th>
-                                    <th class="py-3 px-6 text-right" scope="col">Pagu Anggaran</th>
-                                    <th class="py-3 px-6 text-right" scope="col">Realisasi</th>
-                                    <th class="py-3 pl-6 text-right" scope="col">Persentase</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Pajak Daerah
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">60,98%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Retribusi
-                                            Daerah</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">45,76%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Hasil
-                                            Pengelolaan Kekayaan Daerah yang Dipisahkan</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">35,67%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Lain-lain PAD
-                                            yang Sah</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">78,00%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Pendapatan
-                                            Transfer Pemerintah Pusat</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">54,47%</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-blue-600 rounded-full mr-3"></span>Pendapatan
-                                            Transfer Antar Daerah</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">79,06%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                    <img alt="Pie chart showing distribution of Pendapatan Daerah" class="max-w-xs w-full"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA1c8S4Q0_ymIL4JXObrMZIkgtTl-6ckMnrfs4d7gn_EHFG5F5kE3CVLBEtCEUb_hBRuKO25580e5LpELJGJN32x6zvHrylJT6nKpqDIceWVeLwe45-ASBCe1ma19lWl3jUD7NJeoQIli4zZ0AW5c505a8KDxtt9a2uvcZZKAhBRs2Gp3IDgUMS0bituP-BcQa3SVDbe2ChrMx71ZcATndrtAHYSQzconvfbYhEUBgyXIX4WM3w1iaDka4-PJotkAnS_4JqFK-BSE_" />
-                </div>
-            </section>
-            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                    <img alt="Pie chart showing distribution of Belanja Daerah" class="max-w-xs w-full"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu66b930wnqLiw3gOdsn3zewlJQ7W3Gqp0nUsE4WN9971_Gr58Rdrv3P_9UyY3KFe4CuX_DiooppM8lQuNGUXRKlquwcsIbweESJDZy6JKUMFrbtwhLP2bWZWQvdbbDe5kqtmylZGwa7C9GqjhJjscWPoglFcSrO-7-Gpo_g4HdvaU-cLYCl0vYC7wo50b_ZYmABFZZ2iXq5w34E7dSfxoLxPVSnSHe7jayd83Tw8I0Nv03BylEstebXEWsHVuAjABl4HJkdswKLZ8" />
-                </div>
-                <div
-                    class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Belanja Daerah</h2>
-                    <div class="overflow-y-auto max-h-[29rem] scrollbar-thin">
-                        <table class="w-full text-sm text-left">
-                            <thead
-                                class="text-xs text-gray-500 dark:text-gray-400 uppercase sticky top-0 bg-white dark:bg-gray-800">
-                                <tr>
-                                    <th class="py-3 pr-6" scope="col">Nama Akun</th>
-                                    <th class="py-3 px-6 text-right" scope="col">Pagu Anggaran</th>
-                                    <th class="py-3 px-6 text-right" scope="col">Realisasi</th>
-                                    <th class="py-3 pl-6 text-right" scope="col">Persentase</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-800 rounded-full mr-3"></span>Belanja Pegawai
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">80,98%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-600 rounded-full mr-3"></span>Belanja Barang
-                                            dan Jasa</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">45,66%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-500 rounded-full mr-3"></span>Belanja Hibah
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">34,89%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-400 rounded-full mr-3"></span>Belanja Modal
-                                            Peralatan dan Mesin</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">49,88%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-300 rounded-full mr-3"></span>Belanja Modal
-                                            Gedung dan Bangunan</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">27,98%</td>
-                                </tr>
-                                <tr class="border-b border-gray-200 dark:border-gray-700">
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-600 rounded-full mr-3"></span>Belanja Modal
-                                            Jalan, Jaringan, dan Irigasi</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">89,88%</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-4 pr-6 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                        <div class="flex items-center"><span
-                                                class="w-2.5 h-2.5 bg-red-800 rounded-full mr-3"></span>Belanja Bagi
-                                            Hasil</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">Rp 109.227.495.420,00</td>
-                                    <td class="py-4 px-6 text-right">Rp 89.227.495.420,00</td>
-                                    <td class="py-4 pl-6 text-right font-medium">43,87%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
+<body>
+    <div class="header">
+        <h1>Dashboard Keuangan Daerah Pemerintah Daerah Kabupaten Kubu Raya</h1>
+        <div class="year">Tahun anggaran 2025</div>
     </div>
 
+    <div class="content-wrapper">
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-amount">Rp 1.874.864.452.470,00</div>
+                <div class="card-realisasi">Realisasi Rp 966.001.121.892,15</div>
+                <div class="card-footer">
+                    <div class="card-label">
+                        <span class="dot blue"></span>
+                        <span>Pendapatan daerah</span>
+                    </div>
+                    <span class="badge blue">85%</span>
+                </div>
+                <div class="progress-bar blue"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-amount">Rp 2.048.151.597.242,00</div>
+                <div class="card-realisasi">Realisasi Rp 876.813.653.635,81</div>
+                <div class="card-footer">
+                    <div class="card-label">
+                        <span class="dot pink"></span>
+                        <span>Belanja daerah</span>
+                    </div>
+                    <span class="badge pink">88%</span>
+                </div>
+                <div class="progress-bar pink"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-amount">Rp 183.287.144.772,00</div>
+                <div class="card-realisasi">Realisasi Rp 803.923.982,00</div>
+                <div class="card-footer">
+                    <div class="card-label">
+                        <span class="dot dark"></span>
+                        <span>Penerimaan pembiayaan</span>
+                    </div>
+                    <span class="badge dark">90%</span>
+                </div>
+                <div class="progress-bar dark"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-amount">Rp 183.287.144.772,00</div>
+                <div class="card-realisasi">Realisasi Rp 803.923.982,00</div>
+                <div class="card-footer">
+                    <div class="card-label">
+                        <span class="dot orange"></span>
+                        <span>pengeluaran pembiayaan</span>
+                    </div>
+                    <span class="badge orange">80%</span>
+                </div>
+                <div class="progress-bar orange"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="table-container">
+                <h2>Pendapatan Daerah</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Akun</th>
+                            <th>Pagu Anggaran</th>
+                            <th>Realisasi</th>
+                            <th>Persentase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Pajak Daerah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>60,98%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Retribusi Daerah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>45,76%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Hasil Pengelolaan Kekayaan Daerah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>35,67%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Lain-lain PAD yang Sah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>78,00%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Pendapatan Transfer Pusat</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>54,47%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot blue"></span>
+                                    <span>Pendapatan Transfer Antar Daerah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>79,06%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Distribusi Pendapatan Daerah</div>
+                <svg class="svg-wrapper" viewBox="0 0 300 300">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#1e3a8a" />
+                            <stop offset="100%" stop-color="#3b82f6" />
+                        </linearGradient>
+                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#2563eb" />
+                            <stop offset="100%" stop-color="#60a5fa" />
+                        </linearGradient>
+                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5e9" />
+                            <stop offset="100%" stop-color="#38bdf8" />
+                        </linearGradient>
+                        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0284c7" />
+                            <stop offset="100%" stop-color="#7dd3fc" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M150 150 L150 20 A130 130 0 0 1 265 210 Z" fill="url(#grad1)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L265 210 A130 130 0 0 1 65 230 Z" fill="url(#grad2)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L65 230 A130 130 0 0 1 115 40 Z" fill="url(#grad3)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L115 40 A130 130 0 0 1 150 20 Z" fill="url(#grad4)" stroke="#fff"
+                        stroke-width="3" />
+                    <text x="205" y="120" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">45%</text>
+                    <text x="205" y="135" text-anchor="middle" fill="white" font-size="8">Lain-lain PAD</text>
+                    <text x="210" y="210" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">35%</text>
+                    <text x="210" y="225" text-anchor="middle" fill="white" font-size="8">Transfer Pusat</text>
+                    <text x="90" y="210" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">15%</text>
+                    <text x="90" y="225" text-anchor="middle" fill="white" font-size="8">Pajak Daerah</text>
+                    <text x="135" y="70" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">5%</text>
+                    <text x="135" y="85" text-anchor="middle" fill="white" font-size="8">Retribusi</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="belanja-section">
+            <div class="chart-container">
+                <div class="chart-title">Distribusi Belanja Daerah</div>
+                <svg class="svg-wrapper" viewBox="0 0 300 300">
+                    <defs>
+                        <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#7f1d1d" />
+                            <stop offset="100%" stop-color="#dc2626" />
+                        </linearGradient>
+                        <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#b91c1c" />
+                            <stop offset="100%" stop-color="#ef4444" />
+                        </linearGradient>
+                        <linearGradient id="grad7" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#dc2626" />
+                            <stop offset="100%" stop-color="#fca5a5" />
+                        </linearGradient>
+                        <linearGradient id="grad8" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#991b1b" />
+                            <stop offset="100%" stop-color="#f87171" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M150 150 L150 20 A130 130 0 0 1 265 210 Z" fill="url(#grad5)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L265 210 A130 130 0 0 1 65 230 Z" fill="url(#grad6)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L65 230 A130 130 0 0 1 115 40 Z" fill="url(#grad7)" stroke="#fff"
+                        stroke-width="3" />
+                    <path d="M150 150 L115 40 A130 130 0 0 1 150 20 Z" fill="url(#grad8)" stroke="#fff"
+                        stroke-width="3" />
+                    <text x="205" y="120" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">45%</text>
+                    <text x="205" y="135" text-anchor="middle" fill="white" font-size="8">Pegawai</text>
+                    <text x="210" y="210" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">30%</text>
+                    <text x="210" y="225" text-anchor="middle" fill="white" font-size="8">Barang & Jasa</text>
+                    <text x="90" y="210" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">15%</text>
+                    <text x="90" y="225" text-anchor="middle" fill="white" font-size="8">Modal</text>
+                    <text x="135" y="70" text-anchor="middle" fill="white" font-size="14"
+                        font-weight="bold">10%</text>
+                    <text x="135" y="85" text-anchor="middle" fill="white" font-size="8">Lainnya</text>
+                </svg>
+            </div>
+
+            <div class="table-container">
+                <h2>Belanja Daerah</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Akun</th>
+                            <th>Pagu Anggaran</th>
+                            <th>Realisasi</th>
+                            <th>Realisasi %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #7f1d1d;"></span>
+                                    <span>Belanja Pegawai</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>80,98%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #dc2626;"></span>
+                                    <span>Belanja Barang dan Jasa</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>45,66%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #b91c1c;"></span>
+                                    <span>Belanja Hibah</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>34,89%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #dc2626;"></span>
+                                    <span>Belanja Modal Peralatan</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>49,88%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #ef4444;"></span>
+                                    <span>Belanja Modal Gedung</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>27,98%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #dc2626;"></span>
+                                    <span>Belanja Modal Jalan</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>89,88%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="account-name">
+                                    <span class="small-dot" style="background-color: #dc2626;"></span>
+                                    <span>Belanja Bagi Hasil</span>
+                                </div>
+                            </td>
+                            <td>Rp 109.227.495.420,00</td>
+                            <td>Rp 89.227.495.420,00</td>
+                            <td>43,87%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
