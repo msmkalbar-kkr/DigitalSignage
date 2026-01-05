@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class UltahController extends Controller
 {
@@ -62,42 +63,61 @@ class UltahController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->data;
+        // Validasi file foto
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
+        // Simpan file foto
+        $path = null;
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('foto', 'public');
+        }
+
+
+        $data = json_decode($request->data, true);
+
+        // dd($data);
 
         DB::beginTransaction();
         try {
-            $cek = DB::table('ulangTahun')->where([
-                'nip' => $data['nip'],
-            ])->count();
+
+            // Cek nip sudah ada atau belum
+            $cek = DB::table('ulangTahun')
+                ->where('nip', $data['nip'])
+                ->count();
+
+
             if ($cek > 0) {
                 return response()->json(['message' => 4]);
             }
+            // Simpan data
+            DB::table('ulangTahun')->insert([
+                'foto'         => $path,
+                'nip'          => $data['nip'],
+                'nama'         => $data['nama'],
+                'tanggalLahir' => $data['tgl'],
+                'jabatan'      => $data['jabatan'],
+                'created_at'   => now(),
+            ]);
 
-
-
-            DB::table('ulangTahun')->insert(
-                [
-
-                    'nip' => $data['nip'],
-                    'nama' => $data['nama'],
-                    'tanggalLahir' => $data['tgl'],
-                    'created_at' => date('Y-m-d H:i:s'),
-
-                ]
-            );
             DB::commit();
+
             return response()->json([
-                'status' => true,
+                'status'  => true,
                 'message' => 1
             ]);
         } catch (\Throwable $th) {
+
+            DB::rollBack();
+
             return response()->json([
-                'status' => true,
-                'message' => $th
+                'status'  => false,
+                'message' => $th->getMessage()
             ]);
         }
     }
+
 
     public function edit($id)
     {
@@ -112,11 +132,28 @@ class UltahController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->data;
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        // Simpan file foto
+        $path = null;
+        if ($request->hasFile('foto')) {
+
+            $path = $request->file('foto')->store('foto', 'public');
+        }
+
+
+        $data = json_decode($request->data, true);
+
+        $old = DB::table('ulangTahun')->where('id', $data['id'])->first();
+        if ($old->foto && Storage::disk('public')->exists($old->foto)) {
+            Storage::disk('public')->delete($old->foto);
+        }
 
 
         DB::beginTransaction();
         try {
+
             $cek = DB::table('ulangTahun')->where([
                 'nip' => $data['nip'],
             ])->count();
@@ -128,9 +165,10 @@ class UltahController extends Controller
 
             DB::table('ulangTahun')->where('id', $data['id'])->update(
                 [
-
+                    'foto' => $path,
                     'nip' => $data['nip'],
                     'nama' => $data['nama'],
+                    'jabatan' => $data['jabatan'],
                     'tanggalLahir' => $data['tgl'],
                     'updated_at' => date('Y-m-d H:i:s'),
 

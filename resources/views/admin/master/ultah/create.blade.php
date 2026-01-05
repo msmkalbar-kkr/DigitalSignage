@@ -35,10 +35,23 @@
                 <div class="flex flex-col">
                     <x-form.date-picker name="tanggal" label="Tanggal Lahir" id="tgl" placeholder="Pilih tanggal" />
                 </div>
+                <div class="flex flex-col">
+                    <label for="jabatan" class="mb-1 font-medium text-gray-700">jabatan</label>
+                    <x-input id="jabatan" name="jabatan" class="p-2 w-full bg" />
+                </div>
 
 
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                <div class="flex flex-col">
+                    <label for="foto" class="mb-1 font-medium text-gray-700">foto</label>
+                    <x-input id="foto" name="foto" class="p-2 w-full bg" type="file" />
+                </div>
+
+
+                <img id="preview-foto" class="mt-3 w-32 h-32 object-cover rounded border hidden" />
+            </div>
 
         </div>
         <div class="w-full flex justify-end pt-4">
