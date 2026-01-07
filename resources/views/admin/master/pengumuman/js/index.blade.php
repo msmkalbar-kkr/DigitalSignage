@@ -44,20 +44,34 @@
                 }
             ],
 
-
             columns: [{
                     data: null,
                     defaultContent: ''
-                }, // +
+                }, // control
                 {
                     data: 'DT_RowIndex',
                     searchable: false,
                     orderable: false
-                }, // #
+                },
                 {
                     data: 'tanggal'
-
                 },
+
+                {
+                    // JUDUL (truncate Tailwind + tooltip)
+                    data: 'judul',
+                    render: function(data) {
+                        if (!data) return "-";
+
+                        return `
+                    <span 
+                        class="block max-w-[180px] truncate" 
+                        title="${data}"
+                    >${data}</span>
+                `;
+                    }
+                },
+
                 {
                     data: 'waktu'
                 },
@@ -65,7 +79,18 @@
                     data: 'tempat'
                 },
                 {
-                    data: 'agenda'
+
+                    data: 'agenda',
+                    render: function(data) {
+                        if (!data) return "-";
+
+                        return `
+                    <span 
+                        class="block max-w-[180px] truncate" 
+                        title="${data}"
+                    >${data}</span>
+                `;
+                    }
                 },
                 {
                     data: 'aksi',
@@ -74,6 +99,8 @@
                 }
             ]
         });
+
+
 
 
 

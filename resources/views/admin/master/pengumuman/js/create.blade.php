@@ -4,12 +4,17 @@
 
         $('#tambah').on('click', function() {
             let tgl = document.getElementById('tgl').value;
+            let judul = document.getElementById('judul').value;
             let waktu = document.getElementById('waktu').value;
             let tempat = document.getElementById('tempat').value;
             let agenda = document.getElementById('agenda').value;
             let keterangan = document.getElementById('keterangan').value;
 
 
+            if (!judul) {
+                alert('judul Belum di isi!')
+                return
+            }
             if (!waktu) {
                 alert('waktu Belum di isi!')
                 return
@@ -38,6 +43,7 @@
                 agenda,
                 keterangan,
                 tgl,
+                judul
 
             }
 

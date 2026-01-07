@@ -19,6 +19,7 @@
                     <th></th> <!-- control -->
                     <th>No</th> <!-- DT_RowIndex -->
                     <th>Tanggal</th>
+                    <th>judul</th>
                     <th>Waktu</th>
                     <th>Tempat</th>
                     <th>Agenda</th>

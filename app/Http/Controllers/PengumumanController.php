@@ -72,6 +72,7 @@ class PengumumanController extends Controller
             DB::table('pengumuman')->insert(
                 [
 
+                    'judul' => $data['judul'],
                     'tanggal' => $data['tgl'],
                     'waktu' => $data['waktu'],
                     'tempat' => $data['tempat'],
@@ -121,6 +122,7 @@ class PengumumanController extends Controller
                 [
 
                     'tanggal' => $data['tgl'],
+                    'judul' => $data['judul'],
                     'waktu' => $data['waktu'],
                     'tempat' => $data['tempat'],
                     'agenda' => $data['agenda'],

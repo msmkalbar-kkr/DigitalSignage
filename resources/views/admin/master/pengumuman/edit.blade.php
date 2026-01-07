@@ -18,6 +18,15 @@
         <div class="flex flex-col gap-6 w-full h-auto">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                <div class="flex flex-col">
+                    <label for="judul" class="mb-1 font-medium text-gray-700">Judul</label>
+                    <x-input id="judul" name="judul" class="p-2 w-full bg" value="{{ $dataAwal->judul }}" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Row 1 -->
                 <div class="flex flex-col">
                     <x-form.date-picker name="tanggal" label="Tanggal" id="tgl"
